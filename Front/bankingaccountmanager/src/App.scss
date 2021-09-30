@@ -1,0 +1,41 @@
+*{
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+.logincontainer{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login{
+  width: 400px;
+  height: 600px;
+  border-top: black solid;
+  border-bottom:black solid;
+  h1{
+    text-align: center;
+    font-family: Ubuntu;
+    padding: 20px 0px;
+  }
+  label{
+    display: block;
+    padding: 10px 0px;
+    font-family: Ubuntu;
+    font-size: 20px;
+  }
+  input{
+    width: 80%;
+    height: 30px;
+    font-size: 15px;
+  }
+  .buttons{
+    display: inline-block;
+    margin: 20px 0px;
+    }
+    button{
+      width: 100px;
+      height: 40px;
+    }
+  }
