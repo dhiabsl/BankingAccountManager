@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import  CharityOrganisations, Transaction, User, content
 
  
- 
+ #Serializing the data is very important for data sécurity
 class UserSerializer(serializers.ModelSerializer):
  
     class Meta:

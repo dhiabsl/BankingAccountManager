@@ -1,8 +1,11 @@
+// Canceling the padding and the margin of the document
 *{
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
 }
+
+//For the log-in component
 .logincontainer{
   height: 100vh;
   display: flex;
@@ -39,3 +42,75 @@
       height: 40px;
     }
   }
+
+  //Account component
+  .account{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px 20px;
+    font-family: Ubuntu;
+    text-align: center;
+    .amount{
+      padding: 20px 0px;
+      margin: 10px 0px;
+      font-size: 30px;
+      background-color: rgb(243, 247, 195);
+    }
+    button{
+      border: none;
+      padding: 10px 0px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #fff;
+      margin: 10px 20px;
+    }
+    .logout{
+      background-color: rgb(247, 168, 168);
+    }
+    .send{
+      background-color: rgb(40, 250, 92);
+    }
+    .subscribe{
+      background-color: rgb(168, 180, 247);
+    }
+    .Recharge{
+      background-color: rgb(240, 210, 45);
+    }
+
+  }
+  .sender, .benif{
+    height: 30px;
+    margin: 5px;
+  }
+  .history{
+    width:80%;
+    padding:20px 10px;
+    margin: 5px auto;
+    background-color: rgb(235, 220, 20);
+    text-align: center;
+    font-family: ubuntu;
+    line-height: 40px;
+  }
+  //Transaction component
+.transaction{
+
+  h1{
+    text-align: center;
+    font-family: sans-serif;
+  }
+  .link{
+    display: flex;
+    text-decoration: none;
+  }
+  button{
+    width: 80%;
+    border: none;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #fff;
+    margin: 20px auto;
+    background-color: black;
+  }
+}

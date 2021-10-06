@@ -4,6 +4,7 @@ from django.db.models.deletion import CASCADE
 # Create your models here.
 
 # in pg-admin it's name is router_user
+# Extending the user class to gain access to it's methods
 class User(AbstractUser):
     code = models.CharField(max_length=4, blank=False,unique=True)
     email = models.EmailField(max_length=20,blank=False,unique=True)
@@ -12,8 +13,9 @@ class User(AbstractUser):
     username = models.CharField(max_length=20,blank=False)
     phone = models.IntegerField(blank=False)
     amount = models.FloatField(blank=False)
-
+    #Defining the email as the Username
     USERNAME_FIELD = 'email'
+    #We dont pass required fields
     REQUIRED_FIELDS = []
 
 # in pg-admin it's name is router_transaction
@@ -33,7 +35,9 @@ class CharityOrganisations(models.Model):
     organization = models.CharField(max_length=100, blank=False)
     info = models.CharField(max_length=250, blank=False)
 
+# in pg-admin it's name is router_content
 class content(models.Model):
+    #Foreign key example
     charityorganisations = models.ForeignKey(CharityOrganisations, on_delete=models.CASCADE)
     cover = models.ImageField(blank=True)
     text = models.TextField(blank=False)

@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# Add CORS (On top)| The Django application | the Django rest framework
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,6 +79,8 @@ WSGI_APPLICATION = 'Django_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+#Database configurations
+# ! Create DB manually
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -133,7 +135,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Allow any kind of request to the server
 CORS_ORIGIN_ALLOW_ALL = True
 
+#Declaring the login url and the auth model
 LOGIN_URL = '/login'    
 AUTH_USER_MODEL = 'router.User'

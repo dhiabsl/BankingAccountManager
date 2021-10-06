@@ -53,4 +53,90 @@
   width: 100px;
   height: 40px;
 }
+
+.account {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 10px 20px;
+  font-family: Ubuntu;
+  text-align: center;
+}
+
+.account .amount {
+  padding: 20px 0px;
+  margin: 10px 0px;
+  font-size: 30px;
+  background-color: #f3f7c3;
+}
+
+.account button {
+  border: none;
+  padding: 10px 0px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+  margin: 10px 20px;
+}
+
+.account .logout {
+  background-color: #f7a8a8;
+}
+
+.account .send {
+  background-color: #28fa5c;
+}
+
+.account .subscribe {
+  background-color: #a8b4f7;
+}
+
+.account .Recharge {
+  background-color: #f0d22d;
+}
+
+.sender, .benif {
+  height: 30px;
+  margin: 5px;
+}
+
+.history {
+  width: 80%;
+  padding: 20px 10px;
+  margin: 5px auto;
+  background-color: #ebdc14;
+  text-align: center;
+  font-family: ubuntu;
+  line-height: 40px;
+}
+
+.transaction h1 {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.transaction .link {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-decoration: none;
+}
+
+.transaction button {
+  width: 80%;
+  border: none;
+  padding: 10px 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+  margin: 20px auto;
+  background-color: black;
+}
 /*# sourceMappingURL=App.css.map */

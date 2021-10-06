@@ -20,5 +20,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # For any route go to the router.urks file
     url(r'^', include('router.urls'))
 ]

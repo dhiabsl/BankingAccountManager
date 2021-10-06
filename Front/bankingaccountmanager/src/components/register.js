@@ -1,7 +1,13 @@
 import React,{useState} from 'react'
+// eslint-disable-next-line react-hooks/exhaustive-deps
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
+
 
 function Register() {
+    //Use history is for redirecting
+    let history = useHistory();
+    //Getting all form data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [cin, setCin] = useState(0);
@@ -10,13 +16,14 @@ function Register() {
     const [amount, setAmount] = useState(0);
     const [code, setCode] = useState('');
 
+    //Sending form data to the backend with an async function
     async function sendreq(e){
         try {
             e.preventDefault();
             const quest = {email,password,cin,username,phone,amount,code}
-            console.log(quest)
-            const resp = await axios.post('http://127.0.0.1:8000/register', quest);
-            console.log(resp.data);
+            // console.log(quest)
+            await axios.post('http://127.0.0.1:8000/register', quest);
+            // console.log(resp.data);
         } catch (err) {
             // Handle Error Here
                 // 404 will be loged below
@@ -26,6 +33,7 @@ function Register() {
     }
     return (
         <div className='logincontainer'>
+            {/* Register form to get all the data with onchange = setState */}
             <form className='login'>
                 <h1>SIGN IN</h1>
                 <label>Code :</label>
@@ -43,7 +51,8 @@ function Register() {
                 <label>Amount :</label>
                 <input type='number' placeholder='Your money' name='amount' value={amount} onChange={e => setAmount(e.target.value)}/>
                 <div className='buttons'>
-                    <button onClick={sendreq}> Log in </button>
+                    <button onClick={sendreq}> Register </button>
+                    <button onClick={() => history.push('/login')}> Log-in </button>
                 </div>
             </form>
         </div>

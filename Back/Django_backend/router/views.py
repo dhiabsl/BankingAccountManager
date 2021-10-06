@@ -14,7 +14,6 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
@@ -40,27 +39,10 @@ class LoginView(APIView):
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
+            'id': user.id,
             'jwt': token
         }
         return response
-
-class UserView(APIView):
-
-    def get(self, request):
-        payload = Check_user.post(self, request)
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-class GetUsers(APIView):
-
-    def get(self, request):
-        if Check_user.post(self, request) is not None:
-            user = User.objects.all()
-            serializer = UserSerializer(user, many=True)
-            # print(serializer.data)
-        return Response(serializer.data)
-
 class LogoutView(APIView):
     def post(self, request):
         response = Response()
@@ -69,6 +51,23 @@ class LogoutView(APIView):
             'message': 'success'
         }
         return response
+class UserView(APIView):
+
+    def post(self, request):
+        payload = Check_user.post(self, request)
+        user = User.objects.filter(id=payload['id']).first()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+class GetUsers(APIView):
+
+    def post(self, request):
+        print(request.data)
+        if Check_user.post(self, request) is not None:
+            user = User.objects.all()
+            serializer = UserSerializer(user, many=True)
+            # print(serializer.data)
+        return Response(serializer.data)
+
 
 class SendMoney(APIView):
     def post(self, request):
@@ -101,18 +100,22 @@ class SendMoney(APIView):
                 "New Amount": newAmount,
                 "Emitter Amount":Emitter.data['amount'],
                 "Reciever Amount":Reciever.data['amount'],
-                "data":{
+                "type":"Sending",
+                "emitter_id":E_id,
+                "amount": Money,
+                "rest":rest,
+                "reciever_id":Reciever.data['id']
+            }
+            db = {
                     "type":"Sending",
-                    "emitter_id":E_id,
+                    "user_id":E_id,
                     "amount": Money,
                     "rest":rest,
                     "reciever_id":Reciever.data['id']
                 }
-            }
-            Transactions.post(self, data.db)
+            Transactions.post(self, db)
 
         return Response(data,status=status.HTTP_200_OK)
-
 class RetrieveMoney(APIView):
     def post(self, request):
         payload = Check_user.post(self, request)
@@ -130,16 +133,39 @@ class RetrieveMoney(APIView):
             data = {
                 "Rest":rest,
                 "Emitter Amount":Emitter.data['amount'],
-                "db":{
+            }
+            db = {
                         "type":"Retrieve",
                         "emitter_id":id,
                         "amount": Money,
                         "rest":rest,
                     }
-            }
-            Transactions.post(self, data.db)
+            Transactions.post(self, db)
 
         return Response(data,status=status.HTTP_200_OK)
+class Recharge(APIView):
+    def post(self, request):
+        payload = Check_user.post(self, request)
+        id = payload['id'] #Get the user ID
+        Money = request.data['Money'] #Get The Money to retrieve
+
+        Me= UserSerializer(User.objects.filter(id=id).first())
+        newAmount = Me.data['amount'] + Money
+        User.objects.filter(id = id).update(amount=newAmount)
+        data = {
+                "Recharg":Money,
+                "Amount":newAmount,
+            }
+        db = {
+                "type":"Retrieve",
+                "user_id":id,
+                "amount": Money,
+                "rest":0,
+                "reciever_id":0
+            }
+        Transactions.post(self, db)
+        return Response(data,status=status.HTTP_200_OK)
+
 
 class Charity(APIView):
     def post(self,request):
@@ -186,6 +212,40 @@ class Charity(APIView):
         else:
             data =  "Subscription ended or Still not your charity day"
         return Response(data, status = status.HTTP_200_OK)
+class Sendcharity(APIView):
+    def post(self,request):
+        #Check if authenticated
+        payload = Check_user.post(self, request)
+
+        charity = request.data['charity']
+        charity_id = request.data['charity_id']
+        id_Donator = payload['id'] #Get the user ID
+        Reciever= CharitySerializer(CharityOrganisations.objects.filter(id=charity_id).first())
+        Donator= UserSerializer(User.objects.filter(id=id_Donator).first())
+        if charity < Donator.data['amount'] :
+                rest = Donator.data['amount'] - charity
+                newAmount = Reciever.data['amount'] + charity
+                User.objects.filter(id = id_Donator).update(amount=rest)
+                CharityOrganisations.objects.filter(id = Reciever.data['id']).update(amount=newAmount)
+                data = {
+                    "Message":"Thank you so much for the donation",
+                    "Organisation Name" : Reciever.data['organization'],  
+                    "You was having": Donator.data['amount'],
+                    "Rest":rest,
+                }
+                db = {
+                        "type":"Charity",
+                        "user_id":id_Donator,
+                        "amount": charity,
+                        "rest":rest,
+                        "reciever_id":charity_id
+                    }
+                Transactions.post(self, db)
+        else:
+            data =  "Subscription ended or Still not your charity day"
+
+        return Response(data, status = status.HTTP_200_OK)
+
 
 class Transactions(APIView):
     def post(self, request):
@@ -193,12 +253,13 @@ class Transactions(APIView):
         serializer = TransactionSerializer(data=request)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
-    def get(self, request):
-        if Check_user.post(self, request) is not None:
-            user = Transaction.objects.all()
-            serializer = TransactionSerializer(user, many=True)
-            # print(serializer.data)
+class GetTransactions(APIView):
+    def post(self, request):
+        payload = Check_user.post(self, request)
+        user = Transaction.objects.filter(user_id=payload['id'])
+        # print(payload['id'] ,"==", user_id )
+        serializer = TransactionSerializer(user, many = True)
+        # print(serializer.data)
         return Response(serializer.data)
 
 class CreateOrganisation(APIView):
@@ -207,29 +268,14 @@ class CreateOrganisation(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+class GetOrganisations(APIView):
 
-    def get(self, request):
+    def post(self, request):
         if Check_user.post(self, request) is not None:
             user = CharityOrganisations.objects.all()
             serializer = CharitySerializer(user, many=True)
             # print(serializer.data)
         return Response(serializer.data)
-
-class Check_user():
-
-    def post(self,request):
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            # payload['id']
-            return payload
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-
 class ConetentView(APIView):
     def post(self, request):
         serializer = ContentSerializer(data=request.data)
@@ -248,3 +294,19 @@ class ConetentView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+class Check_user():
+
+    def post(self,request):
+        token = request.data['jwt']
+        print(token)
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            # payload['id']
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
